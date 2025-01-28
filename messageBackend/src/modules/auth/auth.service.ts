@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import config from "../../../dist/config";
-import { UserModel } from "../user/user.model";
+import authUtil from "./auth.util";
 
 
 const logIn = async (email: string, password: string) => {
@@ -34,12 +33,12 @@ const logIn = async (email: string, password: string) => {
     id: findUserWithEmail.id,
     role: findUserWithEmail.userType,
   };
-  const approvalToken = authUtill.createToken(
+  const approvalToken = authUtil.createToken(
     tokenizeData,
     config.jwt_token_secret,
     config.token_expairsIn
   );
-  const refreshToken = authUtill.createToken(
+  const refreshToken = authUtil.createToken(
     tokenizeData,
     config.jwt_refresh_Token_secret,
     config.rifresh_expairsIn
@@ -51,7 +50,7 @@ const logIn = async (email: string, password: string) => {
 };
 
 const logOut = async (authorizationToken: string) => {
-  const decoded = authUtill.decodeAuthorizationToken(authorizationToken);
+  const decoded = authUtil.decodeAuthorizationToken(authorizationToken);
   const { id } = decoded as JwtPayload;
 
   const findUserById = await UserModel.findOneAndUpdate(

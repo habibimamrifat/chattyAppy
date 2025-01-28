@@ -1,5 +1,6 @@
 import catchAsync from "../../util/catchAsync";
-import authSercvices from "./auth.services";
+import authSercvices from "./auth.service";
+
 
 const logIn = catchAsync(async (req, res) => {
     const { email, password } = req.body
