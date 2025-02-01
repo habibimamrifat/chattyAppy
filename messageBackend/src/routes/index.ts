@@ -1,4 +1,5 @@
 import express from "express";
+import UserRoutes from "../modules/user/user.routs";
 
 
 const Routes = express.Router();
@@ -6,8 +7,8 @@ console.log("working");
 // Array of module routes
 const moduleRouts = [
   {
-    path: "/auth",
-    router: authRouter,
+    path: "/users",
+    router: UserRoutes
   } 
 ];
 

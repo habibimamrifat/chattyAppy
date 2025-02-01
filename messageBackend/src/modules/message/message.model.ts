@@ -33,7 +33,10 @@ const messageListSchema = new Schema({
     ref: 'UserModel',  // Assuming user refers to a User model
     required: true
   }],
-  messageList: [eachMessageSchema]
+  messageList: {
+    type:[eachMessageSchema], 
+    default:[]
+  }
 });
 
 // Create and export the models

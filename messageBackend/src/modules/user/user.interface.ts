@@ -4,10 +4,12 @@ export type TUser = {
 name: string;
 email: string;
 img: string;
-password: string;
-friendListRef:Types.ObjectId;
+age: number;
 role: string;
-isLoggedIn: boolean;
-isDeleted: boolean;
-loggedOutTime: Date;
+password: string;
+friendRequests: string[];
+friendListRef?:Types.ObjectId;
+isLoggedIn?: boolean;
+isDeleted?: boolean;
+loggedOutTime?: Date;
 }

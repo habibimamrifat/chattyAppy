@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { mongo } from 'mongoose';
 import path from 'path';
 
 dotenv.config({
@@ -8,7 +7,9 @@ dotenv.config({
 
 const config = {
 port:process.env.PORT,
-mongo_Uri:process.env.MONGODB_URI as string
+mongo_Uri:process.env.MONGODB_URI as string,
+salt_rounds:process.env.SALT_ROUNDS as string,
+nodeEnv:process.env.NODE_ENV
 
 }
 

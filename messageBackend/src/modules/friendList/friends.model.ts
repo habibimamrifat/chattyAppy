@@ -1,21 +1,23 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema
+ } from 'mongoose';
 import { TFriendList } from './friends.interface';
 
 const eachFriendSchema = new Schema({
-  lastMessageAt: {
-    type: Date,
-    required: true
-  },
   friendId: {
     type: Schema.Types.ObjectId,
     ref: 'User',  // Assuming 'User' is the model for the friend.
     required: true
   },
+
   messageListRef: {
     type: Schema.Types.ObjectId,
     ref: 'MessageList',  // Assuming MessageList is the collection that stores messages.
     required: true
-  }
+  },
+  lastMessageAt: {
+    type: Date,
+    required: true
+  },
 });
 
 // Friend list schema
