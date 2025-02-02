@@ -8,8 +8,8 @@ const createToken = (
     tokenizeData:Record<string,any>,
 
 ):string=>{
-    console.log(config.jwt_expires_In)
-    const Token = jwt.sign(tokenizeData,config.jwt_token,{expiresIn:config.jwt_expires_In})
+    console.log(typeof(config.jwt_expires_In))
+    const Token = jwt.sign(tokenizeData,config.jwt_token,{expiresIn:"4d"})
       return Token
 }
 
