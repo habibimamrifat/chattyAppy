@@ -3,10 +3,11 @@ import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../util/catchAsync';
 import authUtil from '../modules/auth/auth.util';
 import { TUserRole } from '../constent';
+import UserModel from '../modules/user/user.model';
+import idConverter from '../util/idConvirter';
 
 
-
-const auth = (...requeredUserRole: TUserRole[]) => {
+const auth = (...requiredUserRoles: TUserRole[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
         const authorizationToken = req?.headers?.authorization;
 
@@ -14,6 +15,7 @@ const auth = (...requeredUserRole: TUserRole[]) => {
             throw new Error('Unauthorized User: Missing Authorization Token');
         }
 
+        // Decode JWT Token
         const decoded = authUtil.decodeAuthorizationToken(authorizationToken);
 
         if (!decoded) {
@@ -22,21 +24,20 @@ const auth = (...requeredUserRole: TUserRole[]) => {
 
         const { id, role, iat } = decoded as JwtPayload;
 
-        console.log("role", role, "rquR", requeredUserRole)
+        // Convert hex ID to ObjectId
+        const convertedObjectId = idConverter(id);
 
         // Check if the user's role is allowed
-        if (requeredUserRole.length && !requeredUserRole.includes(role)) {
+        if (requiredUserRoles.length && !requiredUserRoles.includes(role)) {
             throw new Error('Unauthorized User: Role not permitted');
         }
 
         // Find the user in the database
         const findUser = await UserModel.findOne({
-            id,
-            isLoggedIn:true,
-            isDeleted:false
+            _id: convertedObjectId,
+            isLoggedIn: true,
+            isDeleted: false
         });
-
-        console.log(findUser)
 
         if (!findUser) {
             throw new Error('Unauthorized User: Forbidden Access');

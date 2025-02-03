@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 
 type eachFriend = {
-    lastMessageAt:Date;
     friendId: Types.ObjectId;
     messageListRef: Types.ObjectId;
+    lastMessageAt:Date;
 }
 
 export  type TFriendList = {

@@ -30,6 +30,8 @@ const logIn = async (email: string, password: string) => {
     throw Error("no; user found with this email");
   }
 
+  // console.log(findUserWithEmail._id.toHexString(), findUserWithEmail.role);
+
   // Tokenize user data
   const tokenizeData = {
     id: findUserWithEmail._id.toHexString(),
@@ -52,6 +54,8 @@ const logIn = async (email: string, password: string) => {
 const logOut = async (authorizationToken: string) => {
   const decoded = authUtil.decodeAuthorizationToken(authorizationToken);
   const { id } = decoded as JwtPayload;
+
+  console.log(id)
 
   const findUserById = await UserModel.findByIdAndUpdate(
     { _id: id },

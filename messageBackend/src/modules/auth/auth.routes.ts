@@ -7,7 +7,7 @@ const authRouter = express.Router();
 authRouter.post("/logIn", authController.logIn);
 authRouter.get(
   "/logOut",
-  auth(),
+  auth("user"),
   authController.logOut
 );
 

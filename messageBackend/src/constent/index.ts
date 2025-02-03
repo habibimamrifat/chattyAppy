@@ -5,6 +5,13 @@ export const userRole= {
     "user": 'user'   
 }as const;
 
+export const FriendrequestType ={
+    'requesting':'requesting',
+    'requested':'requested',
+    'deleted':'deleted',
+    "accepted":'accepted',
+}as const;
+
 export type TErrorSource = {
     path: string | number;
     message: string;

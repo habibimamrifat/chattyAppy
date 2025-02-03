@@ -1,7 +1,20 @@
-import mongoose, { Schema, Types } from 'mongoose';
-import { TUser } from './user.interface';
+import mongoose, { Schema } from 'mongoose';
+import { TFriendRequest, TUser } from './user.interface';
 import bcrypt from "bcrypt";
 import config from '../../config';
+
+
+const friendRequestSchema = new Schema<TFriendRequest>(
+  {
+    friendId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+      requestState: {
+          type: String,
+          enum: ['requesting', 'requested', 'deleted',"accepted"],
+          default: 'requesting',
+      },
+  },
+  { timestamps: true } // Automatically add createdAt and updatedAt fields
+);
 
 const userSchema = new Schema<TUser>({
   name: {
@@ -26,7 +39,7 @@ const userSchema = new Schema<TUser>({
     required: true
   },
   friendRequests:{
-    type: [String],
+    type:  [friendRequestSchema],
     default: []
   },
   friendListRef: {
@@ -58,7 +71,6 @@ const userSchema = new Schema<TUser>({
 userSchema.pre("save", async function (next) {
   try {
     const existingUser = await UserModel.findOne({ email: this.email });
-    console.log(existingUser);
     if (existingUser) {
       throw new Error("Email already exists");
     }
