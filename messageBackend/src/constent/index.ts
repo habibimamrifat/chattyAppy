@@ -12,6 +12,9 @@ export const FriendrequestType ={
     "accepted":'accepted',
 }as const;
 
+// requesting ==>outgoing
+// requested ==>incoming
+
 export type TErrorSource = {
     path: string | number;
     message: string;

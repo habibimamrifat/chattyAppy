@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export type TFriendRequest ={
-    [x: string]: string;
+    _id?: Types.ObjectId;
     friendId:Types.ObjectId,
     requestState:"requesting"|"requested"|"deleted"|"accepted"
 }

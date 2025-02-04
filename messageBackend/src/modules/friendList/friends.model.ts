@@ -1,23 +1,35 @@
 import mongoose, { Schema
  } from 'mongoose';
-import { TFriendList } from './friends.interface';
+import { TEachFriend, TFriendList } from './friends.interface';
 
-const eachFriendSchema = new Schema({
+
+const eachFriendSchema = new Schema<TEachFriend>({
   friendId: {
     type: Schema.Types.ObjectId,
-    ref: 'User',  // Assuming 'User' is the model for the friend.
+    ref: 'User',  
     required: true
   },
 
   messageListRef: {
     type: Schema.Types.ObjectId,
-    ref: 'MessageList',  // Assuming MessageList is the collection that stores messages.
+    ref: 'MessageList', 
     required: true
   },
   lastMessageAt: {
     type: Date,
-    required: true
+    required: true,
+    default:Date.now 
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false,
+    required: false,
+  }
 });
 
 // Friend list schema

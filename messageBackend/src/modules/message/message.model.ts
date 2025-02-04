@@ -30,7 +30,7 @@ const eachMessageSchema = new Schema({
 const messageListSchema = new Schema({
   userId: [{
     type: Types.ObjectId,
-    ref: 'UserModel',  // Assuming user refers to a User model
+    ref: 'User',  // Assuming user refers to a User model
     required: true
   }],
   messageList: {

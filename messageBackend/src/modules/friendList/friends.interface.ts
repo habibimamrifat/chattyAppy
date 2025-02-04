@@ -1,12 +1,14 @@
 import { Types } from "mongoose";
 
-type eachFriend = {
+export type TEachFriend = {
     friendId: Types.ObjectId;
     messageListRef: Types.ObjectId;
     lastMessageAt:Date;
+    isDeleted?: boolean;
+    isBlocked?: boolean;
 }
 
 export  type TFriendList = {
     userId: Types.ObjectId;
-    friendList:eachFriend[];
+    friendList:TEachFriend[];
 }
