@@ -1,6 +1,7 @@
 import express from "express";
 import UserRoutes from "../modules/user/user.routs";
 import authRouter from "../modules/auth/auth.routes";
+import FriendsRours from "../modules/friendList/friends.routes";
 
 
 const Routes = express.Router();
@@ -14,6 +15,10 @@ const moduleRouts = [
   {
     path: "/users",
     router: UserRoutes
+  }, 
+  {
+    path: "/friends",
+    router: FriendsRours
   } 
 ];
 

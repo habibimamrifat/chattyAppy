@@ -14,16 +14,7 @@ UserRoutes.get("/viewProfile", userController.viewProfile)
 
 UserRoutes.get("/peopleYouMayKnow",userController.viewAllUsers)
 
-// friend request Section
-UserRoutes.post("/sendFriendRequest",auth(userRole.user), userController.sendFriendRequest)
-UserRoutes.get("/getFriendRequest",auth(userRole.user), userController.viewAllFriendRequest)
-UserRoutes.get("/getAllSentRequest",auth(userRole.user), userController.viewAllSentREquest)
-UserRoutes.delete("/deleteFriendRequest",auth(userRole.user), userController.deleteFriendRequest)
-UserRoutes.post("/acceptFriendRequest",auth(userRole.user), userController.acceptFriendRequest)
 
-// operation on friends
-UserRoutes.get("/viewAllFriends",auth(userRole.user), userController.viewAllFriends)
-UserRoutes.put("/blockAFriend",auth(userRole.user), userController.blockAFriend)
 
 
 export default UserRoutes
