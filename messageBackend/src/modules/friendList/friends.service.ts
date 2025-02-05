@@ -264,13 +264,30 @@ const viewAllFriends=async(userId:string)=>{
 }
   
 const blockAFriend = async(userId:string, friendId:string)=>{
-    const updateFriendBlockStatus = await FriendListModel.findOneAndUpdate(
-      { userId, 'friendList.friendId': friendId, 'friendList.isBlocked': false }, // Ensure it’s not already blocked
+  const session = await mongoose.startSession();  
+  session.startTransaction();
+  try {
+    const updateFriendBlockStatusUser = await FriendListModel.findOneAndUpdate(
+      { userId, 'friendList.friendId': friendId, 'friendList.isBlocked': false }, 
       { $set: { 'friendList.$.isBlocked': true } },
-      { new: true } // Return updated document
+      { new: true, session } 
     );
-  
-    return updateFriendBlockStatus
+
+    const updateFriendBlockStatusFriend = await FriendListModel.findOneAndUpdate(
+      { userId: friendId, 'friendList.friendId': userId, 'friendList.isBlocked': false }, 
+      { $set: { 'friendList.$.isBlocked': true } },
+      { new: true, session } 
+    );
+
+    await session.commitTransaction();  
+    session.endSession();  
+
+    return{ updateFriendBlockStatusUser, updateFriendBlockStatusFriend}; 
+  } catch (error) {
+    await session.abortTransaction();  
+    session.endSession();  
+    throw error;  
+  }
 }
 
 

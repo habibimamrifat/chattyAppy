@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
 
-type TEachMessage = {  
+export type TEachMessage = {  
     senderId: Types.ObjectId;
     receiverId: Types.ObjectId[];
     message: string;
-    createdAt?: Date;
+    sentAt?: Date;
     isDeleted?: boolean;
  }
 export type TMessageList={
