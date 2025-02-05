@@ -5,9 +5,14 @@ import { TEachFriend, TFriendList } from './friends.interface';
 
 const eachFriendSchema = new Schema<TEachFriend>({
   friendId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',  
-    required: true
+    type: Schema.Types.Mixed, // Allows both ObjectId and string "GROUP"
+    required: true,
+    validate: {
+      validator: function (value: any) {
+        return mongoose.isValidObjectId(value) || value === "GROUP";
+      },
+      message: "friendId must be a valid ObjectId or the string 'GROUP'",
+    },
   },
 
   messageListRef: {
@@ -20,6 +25,8 @@ const eachFriendSchema = new Schema<TEachFriend>({
     required: true,
     default:Date.now 
   },
+  isGroup:{type: Boolean,default:false},
+   
   isDeleted: {
     type: Boolean,
     default: false,

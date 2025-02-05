@@ -160,9 +160,6 @@ const acceptFriendRequest = async (userId:string, requestId:string) => {
     session.startTransaction();
   
     try {
-  
-      
-     
       const requestList = await UserModel.findById(userId)
         .select('friendRequests')
         .session(session);

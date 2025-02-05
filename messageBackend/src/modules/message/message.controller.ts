@@ -11,15 +11,15 @@ const getAllContacts = catchAsync(async(req,res) => {
 
 const sendMessage = catchAsync(async (req,res) => {
     const sender = req.user.id
-    const reciver = req.query.reciverId as string
+    const contactId = req.query.contactId as string
     const message = req.body.message
 
-    if(!sender || !reciver)
+    if(!sender || !contactId)
     {
         throw new Error('Missing sender or receiver')
     }
 
-    const result = await messageServices.sendMessage(sender,reciver,message)
+    const result = await messageServices.sendMessage(sender,contactId,message)
     res.status(200).json({
         message: "Message sent successfully",
         result

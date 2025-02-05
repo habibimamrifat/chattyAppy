@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import idConverter from "../../util/idConvirter";
 import FriendListModel from "../friendList/friends.model";
 import { TEachMessage } from "./message.interface";
@@ -22,49 +23,61 @@ const getAllContacts = async(userId:string)=> {
 
 
 
-  const sendMessage = async (senderId: string, receiverId: string, messagePayload: string) => {
+  const sendMessage = async (senderId: string, contactId: string, messagePayload: string) => {
     const userIdConverted = idConverter(senderId);
-    const reciverIdConverted = idConverter(receiverId);
+    const contactIdConverted = idConverter(contactId);
 
-    if (!messagePayload || !senderId || !receiverId || !userIdConverted || !reciverIdConverted) {
+    
+
+    // console.log(messagePayload,contactId,userIdConverted,contactIdConverted)
+
+    if (!messagePayload || !senderId || !contactId || !userIdConverted || !contactIdConverted) {
         throw new Error("Invalid Message, Sender, or Receiver.");
     }
 
     // Ensure user has access to send messages
-    const accessCheck = await FriendListModel.findOne({
-        userId: senderId,
-        "friendList.friendId": reciverIdConverted,
-        "friendList.isBlocked": false,
-    });
+    const accessCheck = await FriendListModel.aggregate([
+        { $match: { userId: userIdConverted } },  // Match the userId
+        { $unwind: "$friendList" },               // Unwind the friendList array
+        { $match: { "friendList._id": contactIdConverted } }  // Match the specific _id
+      ]);
+      
+      if (!accessCheck || accessCheck.length === 0) {
+          throw new Error("User's friend list not found or contact not found");
+      }
+      
+      const contactDetail = accessCheck[0].friendList;  // The friend object you wanted
+      console.log(contactDetail);
 
-    if (!accessCheck) {
-        throw new Error("Access denied");
-    }
+    const messageListRef = contactDetail. messageListRef
 
-    console.log("Access Check:", accessCheck);
+    let assembledMessage: TEachMessage
 
-    // Find the messageList reference
-    const messageListId = accessCheck.friendList.find(
-        (eachFriend) => eachFriend.friendId.toString() === reciverIdConverted.toString()
-    );
-
-    if (!messageListId || !messageListId.messageListRef) {
-        throw new Error("No message list found, probably deleted.");
-    }
-
-    console.log("Message List Ref:", messageListId.messageListRef);
-
-    // Prepare the message object
-    const assembledMessage: TEachMessage = {
+    if(!contactDetail.isGroup)
+    {
+      // Prepare the message object
+        assembledMessage = {
         senderId: userIdConverted,
-        receiverId: [reciverIdConverted],
+        receiverId: [contactIdConverted],
         message: messagePayload,
         sentAt: new Date(),
     };
+    }
+    else{
+        console.log("it is group")
+        assembledMessage = {
+            senderId: userIdConverted,
+            receiverId: [contactIdConverted],
+            message: messagePayload,
+            sentAt: new Date(),
+        }
+    }
+
+    
 
     // Update the MessageListModel with the new message
     const sendMessage = await MessageListModel.findByIdAndUpdate(
-        messageListId.messageListRef, // Correct `_id` reference
+      messageListRef, // Correct `_id` reference
         { $push: { messageList: assembledMessage } }, // Correct `$push` syntax
         { new: true } // Return the updated document
     );
@@ -73,7 +86,7 @@ const getAllContacts = async(userId:string)=> {
         throw new Error("Failed to update message list.");
     }
 
-    console.log("Message Sent:", assembledMessage);
+    console.log("Message Sent:", sendMessage );
     
     return sendMessage
 };
