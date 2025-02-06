@@ -5,29 +5,28 @@ import { TEachMessage } from "./message.interface";
 import MessageListModel from "./message.model";
 
 
-const getAllContacts = async(userId:string)=> {
-    const userIdConverted = idConverter(userId); 
-  
-    const result = await FriendListModel.aggregate([
-        { $match: { userId: userIdConverted } },
-        { $unwind: "$friendList" },
-        { 
-          $match: { 
-              "friendList.isDeleted": { $ne: true }, 
-              "friendList.isBlocked": { $ne: true }  
-          } 
-        }
-    ]);
+const getAllContacts = async (userId: string) => {
+    const userIdConverted = idConverter(userId);
+
+    const result = await FriendListModel.findOne({ userId: userIdConverted })
+    .populate({
+        path: "friendList.friendId",
+        model: "User", // Reference model name
+        match: { isDeleted: { $ne: true }, isBlocked: { $ne: true } }, // Apply conditions
+        select: "name email img" // Select required fields
+    })
+    .lean(); 
+
     return result
-  };
+};
 
 
 
-  const sendMessage = async (senderId: string, contactId: string, messagePayload: string) => {
+const sendMessage = async (senderId: string, contactId: string, messagePayload: string) => {
     const userIdConverted = idConverter(senderId);
     const contactIdConverted = idConverter(contactId);
 
-    
+
 
     // console.log(messagePayload,contactId,userIdConverted,contactIdConverted)
 
@@ -40,30 +39,29 @@ const getAllContacts = async(userId:string)=> {
         { $match: { userId: userIdConverted } },  // Match the userId
         { $unwind: "$friendList" },               // Unwind the friendList array
         { $match: { "friendList._id": contactIdConverted } }  // Match the specific _id
-      ]);
-      
-      if (!accessCheck || accessCheck.length === 0) {
-          throw new Error("User's friend list not found or contact not found");
-      }
-      
-      const contactDetail = accessCheck[0].friendList;  // The friend object you wanted
-      console.log(contactDetail);
+    ]);
 
-    const messageListRef = contactDetail. messageListRef
+    if (!accessCheck || accessCheck.length === 0) {
+        throw new Error("User's friend list not found or contact not found");
+    }
+
+    const contactDetail = accessCheck[0].friendList;  // The friend object you wanted
+    console.log(contactDetail);
+
+    const messageListRef = contactDetail.messageListRef
 
     let assembledMessage: TEachMessage
 
-    if(!contactDetail.isGroup)
-    {
-      // Prepare the message object
+    if (!contactDetail.isGroup) {
+        // Prepare the message object
         assembledMessage = {
-        senderId: userIdConverted,
-        receiverId: [contactIdConverted],
-        message: messagePayload,
-        sentAt: new Date(),
-    };
+            senderId: userIdConverted,
+            receiverId: [contactIdConverted],
+            message: messagePayload,
+            sentAt: new Date(),
+        };
     }
-    else{
+    else {
         console.log("it is group")
         assembledMessage = {
             senderId: userIdConverted,
@@ -73,11 +71,11 @@ const getAllContacts = async(userId:string)=> {
         }
     }
 
-    
+
 
     // Update the MessageListModel with the new message
     const sendMessage = await MessageListModel.findByIdAndUpdate(
-      messageListRef, // Correct `_id` reference
+        messageListRef, // Correct `_id` reference
         { $push: { messageList: assembledMessage } }, // Correct `$push` syntax
         { new: true } // Return the updated document
     );
@@ -86,13 +84,13 @@ const getAllContacts = async(userId:string)=> {
         throw new Error("Failed to update message list.");
     }
 
-    console.log("Message Sent:", sendMessage );
-    
+    console.log("Message Sent:", sendMessage);
+
     return sendMessage
 };
 
 
-const messageServices={
-    sendMessage,getAllContacts
+const messageServices = {
+    sendMessage, getAllContacts
 }
 export default messageServices

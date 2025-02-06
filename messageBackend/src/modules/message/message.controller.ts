@@ -1,4 +1,5 @@
 import catchAsync from "../../util/catchAsync";
+
 import messageServices from "./message.service";
 
 const getAllContacts = catchAsync(async(req,res) => {
@@ -7,6 +8,10 @@ const getAllContacts = catchAsync(async(req,res) => {
         message: "All contacts fetched successfully",
         result
     })
+})
+
+const viewAllMessageByContactId= catchAsync(async(req, res)=>{
+    const contactId =  
 })
 
 const sendMessage = catchAsync(async (req,res) => {
