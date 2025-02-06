@@ -48,12 +48,13 @@ const createGroup = async (userId: string, payload: { groupName: string, groupMe
 
         // Add this group as a "friend" to all group members
         await Promise.all(
-            convertedGroupMemberList.map(async (eachMember) => {
-                await FriendListModel.findByIdAndUpdate(
-                    eachMember,
+             convertedGroupMemberList.map(async (eachMember) => {
+                let addToFriendList = await FriendListModel.findOneAndUpdate(
+                    {userId:eachMember},
                     { $push: { friendList: newFriendGroup } },
                     { new: true, session }
                 );
+                console.log(addToFriendList)
             })
         );
 

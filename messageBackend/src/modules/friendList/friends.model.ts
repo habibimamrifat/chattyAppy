@@ -54,6 +54,10 @@ const eachFriendSchema = new Schema<TEachFriend>({
     default:Date.now 
   },
   isGroup:{type: Boolean,default:false},
+  groupDetail:{
+    type:groupSchema,
+    required:false
+  },
    
   isDeleted: {
     type: Boolean,

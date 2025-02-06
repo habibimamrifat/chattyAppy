@@ -5,7 +5,7 @@ export type TGroup={
     groupName:string;
     groupMemberList:[Types.ObjectId];
     deletedBy?:[Types.ObjectId];
-    isDeleted?:Boolean
+    isDeleted?:boolean
 }
 
 export type TEachFriend = {
