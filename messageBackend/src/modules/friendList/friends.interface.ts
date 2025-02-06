@@ -1,11 +1,19 @@
 import { Types } from "mongoose";
 
+export type TGroup={
+    groupOwnerId?:Types.ObjectId;
+    groupName:string;
+    groupMemberList:[Types.ObjectId];
+    deletedBy?:[Types.ObjectId];
+    isDeleted?:Boolean
+}
+
 export type TEachFriend = {
     friendId: Types.ObjectId | "GROUP";
     messageListRef: Types.ObjectId;
     lastMessageAt:Date;
-     isGroup?: boolean;
-    groupName?:string;
+    isGroup?: boolean;
+    groupDetail?:TGroup
     isDeleted?: boolean;
     isBlocked?: boolean;
 }

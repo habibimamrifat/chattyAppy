@@ -1,6 +1,34 @@
 import mongoose, { Schema
  } from 'mongoose';
 import { TEachFriend, TFriendList } from './friends.interface';
+import { optional } from 'zod';
+
+const groupSchema = new Schema({
+  groupOwnerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+  },
+  groupName: {
+      type: String,
+      required: true,
+  },
+  groupMemberList: {
+    type: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    }],
+    minlength: 3, // Ensure the group has at least 3 members
+},
+  deletedBy: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      optional:true
+  }],
+}, {
+  timestamps: true, // Adds createdAt and updatedAt fields
+});
 
 
 const eachFriendSchema = new Schema<TEachFriend>({

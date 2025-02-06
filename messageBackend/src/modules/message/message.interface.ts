@@ -10,4 +10,5 @@ export type TEachMessage = {
 export type TMessageList={
     userId: Types.ObjectId[];
     messageList:TEachMessage[];
+    isGroup?:Boolean
 }

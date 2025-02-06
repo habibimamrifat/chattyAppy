@@ -4,12 +4,12 @@ import { TMessageList } from './message.interface';
 const eachMessageSchema = new Schema({
   senderId: {
     type: Types.ObjectId,
-    ref: 'UserModel',  // Assuming you have a User model to reference
+    ref: 'User',  // Assuming you have a User model to reference
     required: true
   },
   receiverId: [{
     type: Types.ObjectId,
-    ref: 'UserModel',  // Assuming the receiver is also a User
+    ref: 'User',  // Assuming the receiver is also a User
     required: true
   }],
   message: {

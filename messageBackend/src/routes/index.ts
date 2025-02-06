@@ -3,6 +3,7 @@ import UserRoutes from "../modules/user/user.routs";
 import authRouter from "../modules/auth/auth.routes";
 import FriendsRours from "../modules/friendList/friends.routes";
 import MessageRoutes from "../modules/message/message.routes";
+import GroupRouts from "../modules/groups/groups.routes";
 
 
 const Routes = express.Router();
@@ -24,6 +25,10 @@ const moduleRouts = [
   {
     path: "/messages",
     router: MessageRoutes
+  },
+  {
+    path: "/group",
+    router: GroupRouts
   } 
 ];
 

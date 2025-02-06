@@ -11,7 +11,18 @@ const getAllContacts = catchAsync(async(req,res) => {
 })
 
 const viewAllMessageByContactId= catchAsync(async(req, res)=>{
-    const contactId =  
+    const contactId =  req.query?.contactId as string
+    const userId = req.user.id
+    if(!contactId)
+    {
+        throw new Error("contact id is not found")
+    }
+    const result = await messageServices.viewAllMessageByContactId(userId,contactId)
+
+    res.status(200).json({
+        message :"all chats found",
+        data:result
+    })
 })
 
 const sendMessage = catchAsync(async (req,res) => {
@@ -33,6 +44,6 @@ const sendMessage = catchAsync(async (req,res) => {
 })
 
 const messageController = {
-    sendMessage,getAllContacts
+    sendMessage,getAllContacts,viewAllMessageByContactId
 }
 export default messageController

@@ -1,21 +1,22 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import idConverter from "../../util/idConvirter";
 import FriendListModel from "../friendList/friends.model";
 import { TEachMessage } from "./message.interface";
 import MessageListModel from "./message.model";
 
 
+
 const getAllContacts = async (userId: string) => {
     const userIdConverted = idConverter(userId);
 
     const result = await FriendListModel.findOne({ userId: userIdConverted })
-    .populate({
-        path: "friendList.friendId",
-        model: "User", // Reference model name
-        match: { isDeleted: { $ne: true }, isBlocked: { $ne: true } }, // Apply conditions
-        select: "name email img" // Select required fields
-    })
-    .lean(); 
+        .populate({
+            path: "friendList.friendId",
+            model: "User", // Reference model name
+            match: { isDeleted: { $ne: true }, isBlocked: { $ne: true } }, // Apply conditions
+            select: "name email img" // Select required fields
+        })
+        .lean();
 
     return result
 };
@@ -89,8 +90,34 @@ const sendMessage = async (senderId: string, contactId: string, messagePayload: 
     return sendMessage
 };
 
+const viewAllMessageByContactId = async (userId: string, contactId: string) => {
+
+    const convertedContactId = idConverter(contactId)
+    const userIdConverted = idConverter(userId)
+    const messageRef = await FriendListModel.aggregate([
+        { $match: { userId: userIdConverted } }, // Find the user by userId
+        { $unwind: "$friendList" }, // Unwind friendList array
+        { $match: { "friendList._id": convertedContactId } }, // Match the specific friend
+        { $project: { "friendList.messageListRef": 1 } } // Return only the friend object
+    ]);
+
+    const messageListId = messageRef[0].friendList.messageListRef
+
+    const allMessage = await MessageListModel.findById({ _id: messageListId }).populate({
+        path: "messageList.senderId",
+        select:"img name"
+    })
+    if (!allMessage) {
+        throw Error("no conversation yet")
+    }
+
+
+    return allMessage.messageList
+
+}
+
 
 const messageServices = {
-    sendMessage, getAllContacts
+    sendMessage, getAllContacts, viewAllMessageByContactId
 }
 export default messageServices
