@@ -72,8 +72,12 @@ const createGroup = async (userId: string, payload: { groupName: string, groupMe
     }
 };
 
+const addMemberTOTheGroup = async(userId:string , friendIds:[string], contactId:string)=>{
+
+}
+
 
 const groupServices={
-createGroup
+createGroup,addMemberTOTheGroup
 }
 export default groupServices
