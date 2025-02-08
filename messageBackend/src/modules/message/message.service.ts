@@ -9,17 +9,57 @@ import MessageListModel from "./message.model";
 const getAllContacts = async (userId: string) => {
     const userIdConverted = idConverter(userId);
 
-    const result = await FriendListModel.findOne({ userId: userIdConverted })
-        .populate({
-            path: "friendList.friendId",
-            model: "User", // Reference model name
-            match: { isDeleted: { $ne: true }, isBlocked: { $ne: true } }, // Apply conditions
-            select: "name email img" // Select required fields
-        })
-        .lean();
+    // Fetch individual contacts (populated)
+    const personalContacts = await FriendListModel.aggregate([
+        { $match: { userId: userIdConverted } },
+        { $unwind: "$friendList" },
+        { $match: { "friendList.isGroup": false } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "friendList.friendId",
+                foreignField: "_id",
+                as: "friendList.friendData"
+            }
+        },
+        { $unwind: { path: "$friendList.friendData", preserveNullAndEmptyArrays: true } },
+        {
+            $project: {
+                contactId: "$friendList._id",
+                userId: 1,
+                "friendList._id": 1,
+                "friendList.friendId": 1,
+                "friendList.isGroup": 1,
+                "friendList.friendData.name": 1,
+                "friendList.friendData.email": 1,
+                "friendList.friendData.img": 1
+            }
+        }
+    ]);
 
-    return result
+    // Fetch groups (without population)
+    const groups = await FriendListModel.aggregate([
+        { $match: { userId: userIdConverted } },
+        { $unwind: "$friendList" },
+        { $match: { "friendList.isGroup": true } },
+        {
+            $project: {
+                contactId: "$friendList._id",
+                userId: 1,
+                "friendList._id": 1,
+                "friendList.friendId": 1,
+                "friendList.isGroup": 1,
+                "friendList.groupDetail": 1
+            }
+        }
+    ]);
+
+    // Combine both personal contacts and groups into a single array
+    const allContacts = [...personalContacts, ...groups];
+
+    return allContacts;
 };
+
 
 
 
@@ -37,21 +77,22 @@ const sendMessage = async (senderId: string, contactId: string, messagePayload: 
 
     // Ensure user has access to send messages
     const accessCheck = await FriendListModel.aggregate([
-        { $match: { userId: userIdConverted } },  // Match the userId
-        { $unwind: "$friendList" },               // Unwind the friendList array
-        { $match: { "friendList._id": contactIdConverted } }  // Match the specific _id
+        { $match: { userId: userIdConverted } },  
+        { $unwind: "$friendList" },               
+        { $match: { "friendList._id": contactIdConverted } } 
     ]);
 
     if (!accessCheck || accessCheck.length === 0) {
         throw new Error("User's friend list not found or contact not found");
     }
 
-    const contactDetail = accessCheck[0].friendList;  // The friend object you wanted
+    const contactDetail = accessCheck[0].friendList;
     console.log(contactDetail);
 
     const messageListRef = contactDetail.messageListRef
 
     let assembledMessage: TEachMessage
+
 
     if (!contactDetail.isGroup) {
         // Prepare the message object
@@ -63,7 +104,11 @@ const sendMessage = async (senderId: string, contactId: string, messagePayload: 
         };
     }
     else {
-        console.log("it is group")
+        console.log("it is a group")
+        const reciverIds = contactDetail.groupDetail.groupMemberList.filter(
+            (memberId : string) => memberId  !== senderId);
+
+
         assembledMessage = {
             senderId: userIdConverted,
             receiverId: [contactIdConverted],
@@ -72,7 +117,7 @@ const sendMessage = async (senderId: string, contactId: string, messagePayload: 
         }
     }
 
-
+console.log("messageListRef",messageListRef)
 
     // Update the MessageListModel with the new message
     const sendMessage = await MessageListModel.findByIdAndUpdate(

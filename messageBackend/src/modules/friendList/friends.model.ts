@@ -4,6 +4,10 @@ import { TEachFriend, TFriendList } from './friends.interface';
 import { optional } from 'zod';
 
 const groupSchema = new Schema({
+  groupImg:{
+    type:String,
+    required: true,
+  },
   groupOwnerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',

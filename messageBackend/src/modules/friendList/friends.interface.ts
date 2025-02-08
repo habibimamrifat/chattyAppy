@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export type TGroup={
+    groupImg:string;
     groupOwnerId?:Types.ObjectId;
     groupName:string;
     groupMemberList:[Types.ObjectId];

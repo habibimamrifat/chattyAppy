@@ -7,6 +7,6 @@ const GroupRouts = express.Router()
 
 
 GroupRouts.post("/createAGroup",auth(userRole.user), groupController.createGroup)
-GroupRouts.patch("/addMemberToTheGroup",auth(userRole.user), groupController.addMemberToTheGroup)
+GroupRouts.patch("/addMemberToTheGroup",auth(userRole.user), groupController.addMemberTOTheGroup)
 
 export default GroupRouts
