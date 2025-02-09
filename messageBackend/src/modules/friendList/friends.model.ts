@@ -73,7 +73,8 @@ const eachFriendSchema = new Schema<TEachFriend>({
     default: false,
     required: false,
   }
-});
+},
+{timestamps:true});
 
 // Friend list schema
 const friendListSchema = new Schema({

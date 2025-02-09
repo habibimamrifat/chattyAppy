@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { TFriendRequest, TUser } from './user.interface';
 import bcrypt from "bcrypt";
 import config from '../../config';
+import { userRole } from '../../constent';
 
 
 const friendRequestSchema = new Schema<TFriendRequest>(
@@ -50,7 +51,8 @@ const userSchema = new Schema<TUser>({
   },
   role: {
     type: String,
-    required: true
+    required: true,
+    default:userRole.user
   },
   isLoggedIn: {
     type: Boolean,

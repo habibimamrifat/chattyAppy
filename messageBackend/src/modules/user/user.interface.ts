@@ -11,7 +11,7 @@ name: string;
 email: string;
 img: string;
 age: number;
-role: string;
+role?: string;
 password: string;
 friendRequests: TFriendRequest[];
 friendListRef?:Types.ObjectId;

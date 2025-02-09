@@ -14,8 +14,6 @@ const createGroup = catchAsync(async (req, res) => {
     })
 })
 
-
-
 const addMemberTOTheGroup=catchAsync(async(req,res)=>{
     const userId = req.user.id as string
     const friendIds= req.body.friendIds

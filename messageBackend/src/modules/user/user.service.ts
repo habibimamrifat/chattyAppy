@@ -26,7 +26,7 @@ const createUser = async (payload: TUser) => {
       await session.commitTransaction();
       session.endSession();
   
-      return { user: updateUser, messageList: friendListResult};
+      return { user: updateUser, friendList: friendListResult};
     } catch (error:any) {
       await session.abortTransaction(); // Rollback on error
       session.endSession();

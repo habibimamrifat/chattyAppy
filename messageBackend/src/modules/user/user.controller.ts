@@ -4,7 +4,12 @@ import userService from "./user.service";
 // genarel user Routs
 const createUser=catchAsync(async(req,res,)=>{
 const result = await userService.createUser(req.body);
-res.send(result);
+res.status(200).json({
+    message:"User Created Successfully along with Friend List",
+    user_Id: result.user?._id,
+    friendList_Id:result.friendList._id
+
+});
 })
 
 const deleteUser=catchAsync(async(req,res)=>{
@@ -13,7 +18,7 @@ const deleteUser=catchAsync(async(req,res)=>{
         throw Error("id is required")
     }   
     const result = await userService.deleteUser(id)
-    res.send(result)
+    res.status(200).json(result)
 })
 
 const updateUser=catchAsync(async(req,res)=>{
@@ -48,10 +53,6 @@ const viewAllUsers = catchAsync(async(req,res)=>{
     const result = await userService.viewAllUsers()
     res.send(result)
 });
-
-
-
-
 
 
 const userController={
