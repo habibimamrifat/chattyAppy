@@ -1,6 +1,6 @@
-import { AppContext } from '@/context/ContextProvider';
-import React, { ReactNode, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ReactNode, useContext, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AppContext } from "@/context/ContextProvider";
 
 interface PrivateRouteProps {
     children: ReactNode;
@@ -8,16 +8,18 @@ interface PrivateRouteProps {
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
     const navigate = useNavigate();
-    const fetchUser = JSON.parse(localStorage.getItem("chattyappyCredentials") || '{}');
+    const location = useLocation();
+    const { user, setUser } = useContext(AppContext);
+
     useEffect(() => {
-        if (!user || !user.userId) {
-            navigate("/");
+        const fetchUser = JSON.parse(localStorage.getItem("chattyappyCredentials") ?? "{}");
+
+        if (!fetchUser || !fetchUser.userId) {
+            navigate("/", { state: { from: location.pathname } }); // Redirect and save attempted path
+        } else {
+            setUser(fetchUser); // Only set user if valid
         }
-    },[navigate, fetchUser]);
-
-    const { user, setUser } = useContext(AppContext); 
-
-    setUser(fetchUser)
+    }, [navigate, setUser, location.pathname]);
 
     return user && user.userId ? <>{children}</> : null;
 };
