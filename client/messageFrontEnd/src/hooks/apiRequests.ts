@@ -1,6 +1,6 @@
 const backEndBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 
-const apiRequest = async (endpoint:string, method = "GET", data:any, extraHeaders = {}) => {
+const apiRequest = async (endpoint:string, data:any, extraHeaders = {}, method = "GET") => {
   try {
 
     console.log("data", data,backEndBaseUrl)

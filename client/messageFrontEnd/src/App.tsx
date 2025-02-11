@@ -9,32 +9,30 @@ import AllFriends from "./pages/AllFriends";
 import PeopleToKnow from "./pages/PeopleToKnow";
 import Register from "./pages/Register";
 import LogOutUser from "./pages/LogOutUser";
-
-
-
-
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <Routes>
-
       {/* dash */}
-      <Route element={<DefaultLayout/>} path="/">
-      <Route element={<LogIn/>} index />
-      <Route element={<Register/>} path="register" />
+      <Route element={<DefaultLayout />} path="/">
+        <Route element={<LogIn />} index />
+        <Route element={<Register />} path="register" />
       </Route>
 
       {/* user home  */}
-      <Route element={<UserHome/>} path="/userHome">
-      <Route element={<Contacts/>} index />
-      <Route element={<Requests/>} path="requests" />
-      <Route element={<Profile/>} path="viewMyProfile" />
-      <Route element={<AllFriends/>} path="viewAllFriends" />
-      <Route element={<PeopleToKnow/>} path="viewAllUser" />
-      <Route element={<LogOutUser/>} path="logOut" />
-      
-      </Route>
 
+      <Route
+        element={<PrivateRoute><UserHome /></PrivateRoute>}
+        path="/userHome"
+      >
+        <Route element={<Contacts />} index />
+        <Route element={<Requests />} path="requests" />
+        <Route element={<Profile />} path="viewMyProfile" />
+        <Route element={<AllFriends />} path="viewAllFriends" />
+        <Route element={<PeopleToKnow />} path="viewAllUser" />
+        <Route element={<LogOutUser />} path="logOut" />
+      </Route>
     </Routes>
   );
 }
