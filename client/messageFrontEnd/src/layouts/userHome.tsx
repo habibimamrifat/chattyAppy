@@ -4,8 +4,11 @@ import { Outlet } from 'react-router-dom'
 const UserHome = () => {
   return (
     <div>
-      <UserHomeNavBar/>
-      <Outlet/>
+      <UserHomeNavBar />
+      <div className='container mx-auto max-w-7xl px-6 flex-grow pt-16'>
+        <Outlet />
+      </div>
+
     </div>
   )
 }

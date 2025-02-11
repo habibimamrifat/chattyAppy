@@ -36,27 +36,27 @@ export default function UserHomeNavBar() {
         },
         {
             name: "Requests",
-            url: "/incomingRequest",
+            url: "/userHome/requests?requestType=incomingRequest",
         },
         {
             name: "Sent Requests",
-            url: "/outgoingRequest",
+            url: "/userHome/requests?requestType=outgoingRequest",
         },
         {
             name: "Profile",
-            url: "/viewMyProfile",
+            url: "/userHome/viewMyProfile",
         },
         {
             name: "All Friends",
-            url: "/viewAllFriends",
+            url: "/userHome/viewAllFriends",
         },
         {
             name: "People You May Know",
-            url: "/viewAllUser",
+            url: "/userHome/viewAllUser",
         },
         {
             name: "Log Out",
-            url: "/logOut",
+            url: "/userHome/logOut",
         },
     ];
 
@@ -86,7 +86,7 @@ export default function UserHomeNavBar() {
                 </NavbarItem>
 
                 <NavbarItem>
-                    <Link color="foreground" href="/incomingRequest">
+                    <Link color="foreground" href="/userHome/requests?requestType=incomingRequest">
                         Requests
                     </Link>
                 </NavbarItem>
